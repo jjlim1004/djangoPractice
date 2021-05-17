@@ -6,5 +6,5 @@ app_name = 'stock'
 
 urlpatterns = [
     path('', views.stock, name='stock'),
-    path('kospi/', views.kospi, name='kospi'),
+    path('kospi/<>', views.stock_graph.as_view(), name='kospi'),
 ]
