@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import Kospi
 
 
-class KospiSerializer(serializers.HyperLinkedModelSerializer):
+class KospiSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(user_url=True)
 
     class Meta:
