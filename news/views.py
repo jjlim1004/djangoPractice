@@ -46,7 +46,7 @@ def news_list(request):
 
                 news_dict[n.get('title')] = n.get('href')
                 idx += 1
-
+            # https: // wayhome25.github.io / django / 2017 / 04 / 01 / django - ep9 - crud /
             cur_page += 1
 
             pages = soup.find('div', {'class': 'sc_page_inner'})
@@ -58,3 +58,4 @@ def news_list(request):
         print('크롤링 완료')
         print(news_dict)
     return Response()
+
