@@ -4,18 +4,25 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
-from rest_framework import response
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework import response, status
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from . import serializer
 from .models import News
 from .serializer import NewsSerializer
 
 
-def news_list(request):
-    if request.method == 'GET':
-        query = input('검색 키워드를 입력하세요 : ')  # 도도코인
-        news_num = int(input('총 필요한 뉴스기사 수를 입력해주세요(숫자만 입력) : '))
+class NewsView(APIView):
+    def get(self, request, **kwargs):
+
+        # query = input('검색 키워드를 입력하세요 : ')  # 도도코인
+        # news_num = int(input('총 필요한 뉴스기사 수를 입력해주세요(숫자만 입력) : '))
+
+        query = kwargs.get('keyword')  # 도도코인
+        news_num = 10
+
         query = query.replace(' ', '+')  # '도도코인 +'
 
         news_url = 'https://search.naver.com/search.naver?where=news&sm=tab_jum&query={}'
@@ -28,7 +35,6 @@ def news_list(request):
         idx = 0
         cur_page = 1
 
-        print()
         print('크롤링 중...')
 
         while idx < news_num:
@@ -44,9 +50,14 @@ def news_list(request):
                 #                   'url': n.get('href')}
                 # idx += 1
 
-                news_dict[n.get('title')] = n.get('href')
+                # news_dict[n.get('title')] = n.get('href')
+                # idx += 1
+
+                news = News(title=n.get('title'), url=n.get('href'))
+                news.save()
                 idx += 1
-            # https: // wayhome25.github.io / django / 2017 / 04 / 01 / django - ep9 - crud /
+
+            # https://wayhome25.github.io/django/2017/04/01/django-ep9-crud/
             cur_page += 1
 
             pages = soup.find('div', {'class': 'sc_page_inner'})
@@ -54,8 +65,7 @@ def news_list(request):
 
             req = requests.get('https://search.naver.com/search.naver' + next_page_url)
             soup = BeautifulSoup(req.text, 'html.parser')
-
         print('크롤링 완료')
         print(news_dict)
-    return Response()
-
+        serializer = NewsSerializer(News.objects.all(), many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
