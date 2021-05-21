@@ -53,7 +53,7 @@ class NewsView(APIView):
                 # news_dict[n.get('title')] = n.get('href')
                 # idx += 1
 
-                news = News(title=n.get('title'), url=n.get('href'))
+                news = News(keyword=query, title=n.get('title'), url=n.get('href'))
                 news.save()
                 idx += 1
 
@@ -67,5 +67,5 @@ class NewsView(APIView):
             soup = BeautifulSoup(req.text, 'html.parser')
         print('크롤링 완료')
         print(news_dict)
-        serializer = NewsSerializer(News.objects.all(), many=True)
+        serializer = NewsSerializer(News.objects.filter(keyword=query), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

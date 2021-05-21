@@ -6,8 +6,10 @@ import pandas_datareader as wb
 import pandas as pd
 import datetime
 import matplotlib.pyplot as plt
+from rest_framework import viewsets
 
 from rest_framework.views import APIView
+
 
 
 def stock(request):
@@ -18,6 +20,7 @@ class stock_graph(APIView):
     def get(self, request, **kwargs):
         date = request.GET.get('date')
         # print(type(date)) #str
+        print(date)
         cur_year = datetime.datetime.now().year
         # print(type(cur_year)) #int
         cur_month = datetime.datetime.now().month
@@ -46,9 +49,10 @@ class stock_graph(APIView):
 
         # plt.show()
         plt.savefig("./stock/static/img/kospi.png")
-        img_url = '/stock/img/kospi.png'
+        img_url = '/stock/static/img/kospi.png'
         data = json.dumps({'date': date, 'img_url': img_url})
 
         # return render(request, 'stock/test.html', {'date': date, 'img_url': img_url})
         # return HttpResponse({'date': date, 'img_url': img_url})
+
         return HttpResponse(data)

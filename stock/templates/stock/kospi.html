@@ -7,20 +7,21 @@
 <body>
     <form id="kospi" action="kospi/" method="get">
         <input id="date" type="date" name="date" >
-        <input id="submitButton" type="button" value="확인">
+        <input type="submit" value="확인">
     </form>
     <div id="kospi_img">
     </div>
 </body>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
-    $("#submitButton").on("click",function(e){
+
+    $("#submitButton").submit(function(e){
         e.preventDefault();
         var kospi_img = $("#kospi_img");
         var date = $("#date").val();
-        $.get('kospi',date,function(data){
+        $.get('kospi/',date,function(data){
             var url =data.img_url;
-            kospi_img.html("<img src ='" + url +"'/>");
+            kospi_img.append("<img src ='" + url +"'/>");
         });
     });
 
