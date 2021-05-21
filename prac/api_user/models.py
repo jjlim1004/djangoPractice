@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 
 class User(models.Model):
@@ -9,3 +10,5 @@ class User(models.Model):
 
     class Meta:
         db_table = "User"  # Table이름을 "User"로 정한다 default 이름은 api_user_user가 된다.
+
+

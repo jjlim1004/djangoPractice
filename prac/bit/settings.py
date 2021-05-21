@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'books.apps.BooksConfig',
     'api_user',
     'rest_framework',
+    'restPrac',
+    'post1',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +54,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# REST_FRAMEWORK={
+#
+# }
 
 ROOT_URLCONF = 'bit.urls'
 
