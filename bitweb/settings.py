@@ -26,7 +26,12 @@ SECRET_KEY = 'django-insecure-&1a6u6k#s9ypu#&+7!gz!u1p=txpe!my%#bts891x6!d$-gt0!
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost:8080', '222.106.22.85', 'localhost', '192.168.0.31']
+ALLOWED_HOSTS = ['localhost:8080',
+                 '222.106.22.85',
+                 'localhost',
+                 '192.168.0.31',
+                 '127.0.0.1',
+                 ]
 
 # Application definition
 
@@ -44,6 +49,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # cors 허용
+    'django.middleware.common.CommonMiddleware', #cors 관련
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -51,15 +58,20 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware', #cors 허용
+
 
 
 ]
 
 #cors 허용 ip
-CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:8080', 'http://localhost:8080']
+CORS_ORIGIN_WHITELIST = [
+    'http://127.0.0.1:8080',
+    'http://localhost:8080',
+    'http://192.168.0.31:8080',
+]
 #cors credential 허용
-CORS_ALLOW_CREDENTIALS = True
+# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True  #쿠키가 요청에 포함할 수 있도록
 
 ROOT_URLCONF = 'bitweb.urls'
 

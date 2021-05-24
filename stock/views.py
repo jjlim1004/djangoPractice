@@ -5,6 +5,8 @@ from django.shortcuts import render
 import pandas_datareader as wb
 import pandas as pd
 import datetime
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from rest_framework import viewsets
 
