@@ -11,7 +11,6 @@ from rest_framework import viewsets
 from rest_framework.views import APIView
 
 
-
 def stock(request):
     return render(request, 'stock/kospi.html')
 
@@ -19,14 +18,17 @@ def stock(request):
 class stock_graph(APIView):
     def get(self, request, **kwargs):
         date = request.GET.get('date')
-        # print(type(date)) #str
+        print(type(date))
         print(date)
+
         cur_year = datetime.datetime.now().year
         # print(type(cur_year)) #int
         cur_month = datetime.datetime.now().month
         cur_day = datetime.datetime.now().day
 
         pd.set_option('precision', 4)
+
+        print()
 
         start = datetime.datetime(int(date[:4]), int(date[5:7]), int(date[8:]))
         end = datetime.datetime(cur_year, cur_month, cur_day)

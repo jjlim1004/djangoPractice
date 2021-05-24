@@ -67,5 +67,5 @@ class NewsView(APIView):
             soup = BeautifulSoup(req.text, 'html.parser')
         print('크롤링 완료')
         print(news_dict)
-        serializer = NewsSerializer(News.objects.filter(keyword=query), many=True)
+        serializer= NewsSerializer(News.objects.filter(keyword=query), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
