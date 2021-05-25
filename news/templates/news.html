@@ -5,6 +5,45 @@
     <title>Title</title>
 </head>
 <body>
-
+<div id="news">
+    <form id="newsForm">
+        <input type="text" name='keyword' placeholder="검색어">
+        <label for="news_num">글 개수</label>
+        <select id="news_num" name="news_num" >
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+        </select>
+        <input type="submit" value="입력">
+    </form>
+</div>
 </body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+      $("#newsForm").submit(function(e){
+        e.preventDefault();
+
+        var keyword = $("input[name='keyword']").val();
+        var news_num = $("#news_num option:selected").val();
+
+        console.log(keyword);
+        console.log(news_num);
+
+        var data = {'keyword': keyword,'news_num':news_num};
+
+
+        $.ajax({
+            url:'news/',
+            method:'GET',
+            data: data,
+            success:function(result){
+                 console.log(result);
+            },
+        });
+
+        console.log('ajax end');
+      });
+
+
+</script>
 </html>

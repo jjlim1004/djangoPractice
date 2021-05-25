@@ -5,6 +5,7 @@ from .views import NewsView
 
 app_name = 'news'
 urlpatterns = [
-    path('', views.NewsView.as_view(), name='news_list'),
-    path('<str:keyword>/', views.NewsView.as_view(), name='news')
+    path('', views.form, name='news_form'),
+    # path('', views.NewsView.as_view(), name='news_list'),
+    path('news/', views.NewsView.as_view(), name='news'),
 ]
