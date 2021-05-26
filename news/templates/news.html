@@ -31,16 +31,14 @@
 
         var data = {'keyword': keyword,'news_num':news_num};
 
-
-        $.ajax({
-            url:'news/',
-            method:'GET',
-            data: data,
-            success:function(result){
-                 console.log(result);
-            },
-        });
-
+            $.ajax({
+                url:'news/',
+                method:'GET',
+                data: data,
+                success:function(result){
+                     console.log(result);
+                },
+            });
         console.log('ajax end');
       });
 

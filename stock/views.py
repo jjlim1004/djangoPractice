@@ -6,6 +6,7 @@ import pandas_datareader as wb
 import pandas as pd
 import datetime
 import matplotlib
+
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from rest_framework import viewsets
@@ -15,6 +16,11 @@ from rest_framework.views import APIView
 
 def stock(request):
     return render(request, 'stock/kospi.html')
+
+
+class stock_information(APIView):
+    def get(self, request, **kwargs):
+        return HttpResponse()
 
 
 class stock_graph(APIView):
