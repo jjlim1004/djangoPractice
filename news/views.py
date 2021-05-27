@@ -16,55 +16,6 @@ from .serializer import NewsSerializer
 
 
 def form(request):
-    stock_dict = {}
-
-    url = 'http://www.sedaily.com/Stock/Quote?type=1'
-    try:
-        html = requests.get(url)
-    except requests.exceptions.RequestException as e:
-        print(e)
-    else:
-        soup = BeautifulSoup(html.text, 'lxml')
-
-    all_table = soup.find_all('div', {'class': 'table'})
-
-    for thead in all_table:
-        dl = thead.find('dl', {'class': 'thead'})
-        dt = dl.find('dt')
-        fieldName = dt.text
-        #     print(fieldName)
-        #     print(dt)
-        tbody = thead.find_all('dl', {'class', 'tbody'})
-
-        count = 0
-        for dl in tbody:
-            name = dl.find('dt').get_text()
-            dd = dl.find('dd')
-            price = tbody[count].find('span').get_text().replace(',', '')
-            print(price)
-            code = dd.get('id').replace('dd_Item_', '')
-            stock_dict[code] = [name, fieldName, price]
-            count += 1
-
-    # # print(all_table.length)
-    # dl = all_table[0].find('dl',{'class':'thead'})
-    # dt = dl.find('dt')
-    # # print(dt.text)
-
-    # #종목 분류 가져오기
-    # # for thead in all_table:
-    # #     dl = thead.find('dl',{'class':'thead'})
-    # #     dt = dl.find('dt')
-    # #     fieldName = dt.text
-    # #     print(fieldName)
-
-    # tbody = all_table[0].find_all('dl',{'class':'tbody'})
-    # name = tbody[0].find('dt').get_text() #종목명
-    # dd = tbody[0].find('dd')
-    # code = dd.get('id').replace('dd_Item_','') #종목코드
-    # price = tbody[0].find('span').get_text().replace(',','') #가격
-    # print(name,code,price)
-
     return render(request, 'news.html')
 
 class NewsView(APIView):
@@ -84,6 +35,7 @@ class NewsView(APIView):
         #ajax data 시도
         keyword = request.GET.get('keyword')
         newses = int(request.GET.get('news_num'))
+        # page_count = int(request.GET.get('page_count'))
         print("news view get")
 
         print(keyword)
