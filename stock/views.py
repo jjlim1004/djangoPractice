@@ -9,7 +9,6 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 
-
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from rest_framework import viewsets
@@ -21,7 +20,17 @@ def stock(request):
     return render(request, 'stock/kospi.html')
 
 
+class stock_detail(APIView):
+    def get(self, request, **kwargs):
+        url = "https://finance.naver.com/sise/sise_market_sum.nhn?page=1"
+
+        res = requests.get(url)
+        soup = BeautifulSoup(res.text, 'lxml')
+
+        return JsonResponse()
+
 class stock_information(APIView):
+
     def get(self, request, **kwargs):
         # 크롤링을 해서 가져오는 경우
         stock_dict = {}
@@ -45,39 +54,21 @@ class stock_information(APIView):
             tbody = thead.find_all('dl', {'class', 'tbody'})
 
             count = 0
+
             for dl in tbody:
                 name = dl.find('dt').get_text()
+
                 dd = dl.find('dd')
                 price = tbody[count].find('span').get_text().replace(',', '')
                 # print(price)
                 code = dd.get('id').replace('dd_Item_', '')
-                print(code)
+                # print(code)
                 stock_dict[code] = [name, fieldName, price]
                 count += 1
 
         # data = json.dumps(stock_dict)
         # 한글이 유니코드로 출력되지 않도록 json_dumps_params 설정
         return JsonResponse(stock_dict, json_dumps_params={'ensure_ascii': False})
-
-        # # print(all_table.length)
-        # dl = all_table[0].find('dl',{'class':'thead'})
-        # dt = dl.find('dt')
-        # # print(dt.text)
-        #
-        # #종목 분류 가져오기
-        # # for thead in all_table:
-        # #     dl = thead.find('dl',{'class':'thead'})
-        # #     dt = dl.find('dt')
-        # #     fieldName = dt.text
-        # #     print(fieldName)
-        #
-        # tbody = all_table[0].find_all('dl',{'class':'tbody'})
-        # name = tbody[0].find('dt').get_text() #종목명
-        # dd = tbody[0].find('dd')
-        # code = dd.get('id').replace('dd_Item_','') #종목코드
-        # price = tbody[0].find('span').get_text().replace(',','') #가격
-        # print(name,code,price)
-
 
 class stock_graph(APIView):
     def get(self, request, **kwargs):
@@ -91,8 +82,6 @@ class stock_graph(APIView):
         cur_day = datetime.datetime.now().day
 
         pd.set_option('precision', 4)
-
-        print()
 
         start = datetime.datetime(int(date[:4]), int(date[5:7]), int(date[8:]))
         end = datetime.datetime(cur_year, cur_month, cur_day)
@@ -122,3 +111,4 @@ class stock_graph(APIView):
         # return HttpResponse({'date': date, 'img_url': img_url})
 
         return HttpResponse(data)
+

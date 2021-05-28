@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Kospi, Stock_information
+from .models import Kospi, Stock_information, Content
 
 
 class KospiSerializer(serializers.ModelSerializer):
@@ -19,4 +19,9 @@ class stockInformationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Stock_information
+        fields = '__all__'
+
+class ContentSerailizer(serializers.ModelSerializer):
+    class Meta:
+        model = Content
         fields = '__all__'
