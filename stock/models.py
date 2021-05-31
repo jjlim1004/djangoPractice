@@ -12,6 +12,8 @@ class Stock_information(models.Model):
     stock_price = models.TextField
     stock_kind = models.TextField
 
+
+
 class Content(models.Model):
     title = models.CharField(max_length=20, null=True)
     content = models.CharField(max_length=30, null=True)

@@ -2,17 +2,20 @@ import json
 
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
-import pandas_datareader as wb
+import pandas_datareader as pdr
 import datetime
 import matplotlib
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+from rest_framework.response import Response
+from stock.models import Content
+
 
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from rest_framework import viewsets
-
 from rest_framework.views import APIView
 
 
@@ -22,12 +25,41 @@ def stock(request):
 
 class stock_detail(APIView):
     def get(self, request, **kwargs):
-        url = "https://finance.naver.com/sise/sise_market_sum.nhn?page=1"
+        # https://chancoding.tistory.com/116?category=846070
+        # 데이터를 가져올 날짜 설정
+        date = request.GET.get('date')
+        print(date)
+        stock_code = request.GET.get('stock_code') + '.KS'
+        print(stock_code)
+        stock_name = request.GET.get('stock_name')
+        print(stock_name)
+        cur_year = datetime.datetime.now().year
+        cur_month = datetime.datetime.now().month
+        cur_day = datetime.datetime.now().day
 
-        res = requests.get(url)
-        soup = BeautifulSoup(res.text, 'lxml')
+        start = datetime.datetime(int(date[:4]), int(date[5:7]), int(date[8:]))
+        end = datetime.datetime(cur_year, cur_month, cur_day)
 
-        return JsonResponse()
+        # 야후에서 삼성전자 데이터 가져오기
+        samsung = pdr.get_data_yahoo(stock_code, start, end)
+
+        samsung = samsung.reset_index()
+        samsung['Date'] = samsung['Date'].apply(lambda x: datetime.datetime.strftime(x, '%Y-%m-%d'))  # Datetime to str
+
+        fig = go.Figure(data=[go.Candlestick(x=samsung['Date'],
+                                             open=samsung['Open'],
+                                             high=samsung['High'],
+                                             low=samsung['Low'],
+                                             close=samsung['Close'])])
+        # x축 type을 카테고리 형으로 설정, 순서를 오름차순으로 날짜순서가 되도록 설정
+        fig.layout = dict(title=stock_name,
+                          xaxis=dict(type="category",
+                                     categoryorder='category ascending'))
+        fig.update_xaxes(nticks=5)
+        fig.show()
+
+        # return Response()
+
 
 class stock_information(APIView):
 
@@ -49,26 +81,37 @@ class stock_information(APIView):
             dl = thead.find('dl', {'class': 'thead'})
             dt = dl.find('dt')
             fieldName = dt.text
-            #     print(fieldName)
-            #     print(dt)
+            # print(fieldName)
+            # print(dt)
             tbody = thead.find_all('dl', {'class', 'tbody'})
 
             count = 0
 
             for dl in tbody:
                 name = dl.find('dt').get_text()
-
+                print(name)
                 dd = dl.find('dd')
                 price = tbody[count].find('span').get_text().replace(',', '')
                 # print(price)
                 code = dd.get('id').replace('dd_Item_', '')
+
                 # print(code)
                 stock_dict[code] = [name, fieldName, price]
                 count += 1
 
         # data = json.dumps(stock_dict)
+
+        # sorting test
+        # sorted_dict = sorted(stock_dict.items())
+        # sorted_dict.sort(key=lambda x: x[1][1])
+        # # print(sorted_dict)
+        # stock_dict = dict(sorted_dict)
+        # print(stock_dict)
+
         # 한글이 유니코드로 출력되지 않도록 json_dumps_params 설정
+        # return JsonResponse(stock_dict, json_dumps_params={'ensure_ascii': False})
         return JsonResponse(stock_dict, json_dumps_params={'ensure_ascii': False})
+
 
 class stock_graph(APIView):
     def get(self, request, **kwargs):
@@ -87,7 +130,7 @@ class stock_graph(APIView):
         end = datetime.datetime(cur_year, cur_month, cur_day)
         # start = datetime.datetime(2021, 5, 1)
         # end = datetime.datetime(2021, 5, 14)
-        df_null = wb.DataReader("^KS11", "yahoo", start, end)
+        df_null = pdr.DataReader("^KS11", "yahoo", start, end)
         df = df_null.dropna()
 
         kospi_chart = df.Close.plot(style='b')
@@ -111,4 +154,3 @@ class stock_graph(APIView):
         # return HttpResponse({'date': date, 'img_url': img_url})
 
         return HttpResponse(data)
-
