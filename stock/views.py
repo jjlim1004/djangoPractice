@@ -10,9 +10,9 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import plotly.express as px
+import cufflinks as cf
 from rest_framework.response import Response
-from stock.models import Content
-
 
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -26,13 +26,14 @@ def stock(request):
 class stock_detail(APIView):
     def get(self, request, **kwargs):
         # https://chancoding.tistory.com/116?category=846070
-        # 데이터를 가져올 날짜 설정
+        # #start를 위해 가져올 날짜 설정
         date = request.GET.get('date')
         print(date)
         stock_code = request.GET.get('stock_code') + '.KS'
         print(stock_code)
         stock_name = request.GET.get('stock_name')
         print(stock_name)
+
         cur_year = datetime.datetime.now().year
         cur_month = datetime.datetime.now().month
         cur_day = datetime.datetime.now().day
@@ -41,24 +42,12 @@ class stock_detail(APIView):
         end = datetime.datetime(cur_year, cur_month, cur_day)
 
         # 야후에서 삼성전자 데이터 가져오기
-        samsung = pdr.get_data_yahoo(stock_code, start, end)
-
-        samsung = samsung.reset_index()
-        samsung['Date'] = samsung['Date'].apply(lambda x: datetime.datetime.strftime(x, '%Y-%m-%d'))  # Datetime to str
-
-        fig = go.Figure(data=[go.Candlestick(x=samsung['Date'],
-                                             open=samsung['Open'],
-                                             high=samsung['High'],
-                                             low=samsung['Low'],
-                                             close=samsung['Close'])])
-        # x축 type을 카테고리 형으로 설정, 순서를 오름차순으로 날짜순서가 되도록 설정
-        fig.layout = dict(title=stock_name,
-                          xaxis=dict(type="category",
-                                     categoryorder='category ascending'))
-        fig.update_xaxes(nticks=5)
-        fig.show()
-
-        # return Response()
+        stock = pdr.get_data_yahoo(stock_code, start, end)
+        # plot = stock.iplot(asFigure=True, title=stock_name, xTitle='날짜', yTitle='거래량')
+        plot = stock.iplot(asFigure=True, kind='line', title=stock_name, xTitle='날짜', yTitle='거래량')
+        plot.to_json()
+        stock_dict = {'stockGraph': plot.to_json()}
+        return JsonResponse(stock_dict, json_dumps_params={'ensure_ascii': False})
 
 
 class stock_information(APIView):
@@ -66,8 +55,9 @@ class stock_information(APIView):
     def get(self, request, **kwargs):
         # 크롤링을 해서 가져오는 경우
         stock_dict = {}
-
-        url = 'http://www.sedaily.com/Stock/Quote?type=1'
+        query = request.GET.get('query')
+        print(query)
+        url = 'http://www.sedaily.com/Stock/Quote?type=' + query
         try:
             html = requests.get(url)
         except requests.exceptions.RequestException as e:
@@ -89,7 +79,7 @@ class stock_information(APIView):
 
             for dl in tbody:
                 name = dl.find('dt').get_text()
-                print(name)
+                # print(name)
                 dd = dl.find('dd')
                 price = tbody[count].find('span').get_text().replace(',', '')
                 # print(price)

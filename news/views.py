@@ -4,6 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import response, status
@@ -37,7 +38,6 @@ class NewsView(APIView):
         newses = int(request.GET.get('news_num'))
         # page_count = int(request.GET.get('page_count'))
         print("news view get")
-
         print(keyword)
         print(newses)
         query = keyword
@@ -50,13 +50,13 @@ class NewsView(APIView):
         req = requests.get(news_url.format(query))
         print(news_url)
         soup = BeautifulSoup(req.text, 'html.parser')
-        # news_dict = {}
+        news_dict = {}
         idx = 0
         cur_page = 1
 
-        print('크롤링 중...')
+        #db에 넣는다고 할때 원래 저장되 있는 것들을 지우기 위한 코드
+        # News.objects.all().delete()
 
-        News.objects.all().delete()
         while idx < news_num:
             ### 네이버 뉴스 웹페이지 구성이 바뀌어 태그명, class 속성 값 등을 수정함(20210126) ###
 
@@ -64,28 +64,31 @@ class NewsView(APIView):
             li_list = table.find_all('li', {'id': re.compile('sp_nws.*')})
             area_list = [li.find('div', {'class': 'news_area'}) for li in li_list]
             a_list = [area.find('a', {'class': 'news_tit'}) for area in area_list]
+            text_list = [area.find('a', {'class': 'api_txt_lines dsc_txt_wrap'}).text for area in area_list]
+
 
             for n in a_list[:min(len(a_list), news_num - idx)]:
-                # news_dict[idx] = {'title': n.get('title'),
-                #                   'url': n.get('href')}
-                # idx += 1
-
-                # news_dict[n.get('title')] = n.get('href')
-                # idx += 1
-
-                news = News(keyword=query, title=n.get('title'), url=n.get('href'))
-                news.save()
+                news_dict[idx] = {'title': n.get('title'),
+                                  'url': n.get('href'),
+                                  'text': text_list[idx]}
                 idx += 1
+                cur_page += 1
+                pages = soup.find('div', {'class': 'sc_page_inner'})
+                next_page_url = [p for p in pages.find_all('a') if p.text == str(cur_page)][0].get('href')
+                req = requests.get('https://search.naver.com/search.naver' + next_page_url)
+                soup = BeautifulSoup(req.text, 'html.parser')
 
-
-            # https://wayhome25.github.io/django/2017/04/01/django-ep9-crud/
-            cur_page += 1
-
-            pages = soup.find('div', {'class': 'sc_page_inner'})
-            next_page_url = [p for p in pages.find_all('a') if p.text == str(cur_page)][0].get('href')
-
-            req = requests.get('https://search.naver.com/search.naver' + next_page_url)
-            soup = BeautifulSoup(req.text, 'html.parser')
+                #db에 저장하기 위한 코드
+                # news = News(keyword=query, title=n.get('title'), url=n.get('href'))
+                # news.save()
+                # idx += 1
+                # cur_page += 1
+                # pages = soup.find('div', {'class': 'sc_page_inner'})
+                # next_page_url = [p for p in pages.find_all('a') if p.text == str(cur_page)][0].get('href')
+                # req = requests.get('https://search.naver.com/search.nav   er' + next_page_url)
+                # soup = BeautifulSoup(req.text, 'html.parser')
+                # https://wayhome25.github.io/django/2017/04/01/django-ep9-crud/
+        # serializer = NewsSerializer(News.objects.filter(keyword=query), many=True)
         print('크롤링 완료')
-        serializer= NewsSerializer(News.objects.filter(keyword=query), many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return JsonResponse(news_dict, json_dumps_params={'ensure_ascii': False})

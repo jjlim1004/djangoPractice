@@ -21,7 +21,7 @@ class stockInformationSerializer(serializers.ModelSerializer):
         model = Stock_information
         fields = '__all__'
 
-class ContentSerailizer(serializers.ModelSerializer):
+class ContentSerailizer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Content
         fields = '__all__'

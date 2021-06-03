@@ -5,6 +5,7 @@ from django.db import models
 class News(models.Model):
     keyword = models.TextField(default='TextField')
     title = models.TextField()
+    content = models.TextField()
     url = models.TextField()
 
 
