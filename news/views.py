@@ -3,14 +3,12 @@
 import requests
 from bs4 import BeautifulSoup
 import re
-
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import response, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from . import serializer
 from .models import News
 from .serializer import NewsSerializer
