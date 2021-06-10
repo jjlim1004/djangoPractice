@@ -31,6 +31,9 @@ ALLOWED_HOSTS = ['localhost:8080',
                  'localhost',
                  '192.168.0.31',
                  '127.0.0.1',
+                 # 'ec2-15-165-141-67.ap-northeast-2.compute.amazonaws.com',
+                 '.ap-northeast-2.compute.amazonaws.com',
+                 '15.165.141.67',
                  ]
 
 # Application definition
@@ -45,12 +48,12 @@ INSTALLED_APPS = [
     'stock.apps.StockConfig',
     'news.apps.NewsConfig',
     'rest_framework',
-    'corsheaders', #django-cors-headers
+    'corsheaders',  # django-cors-headers
 ]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # cors 허용
-    'django.middleware.common.CommonMiddleware', #cors 관련
+    'django.middleware.common.CommonMiddleware',  # cors 관련
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -59,19 +62,17 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-
-
 ]
 
-#cors 허용 ip
+# cors 허용 ip
 CORS_ORIGIN_WHITELIST = [
     'http://127.0.0.1:8080',
     'http://localhost:8080',
     'http://192.168.0.31:8080',
 ]
-#cors credential 허용
+# cors credential 허용
 # CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_CREDENTIALS = True  #쿠키가 요청에 포함할 수 있도록
+CORS_ALLOW_CREDENTIALS = True  # 쿠키가 요청에 포함할 수 있도록
 
 ROOT_URLCONF = 'bitweb.urls'
 
