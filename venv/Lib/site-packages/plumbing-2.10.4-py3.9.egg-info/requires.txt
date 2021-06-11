@@ -1,0 +1,14 @@
+autopaths>=1.4.12
+pandas
+retry
+requests
+
+[check_module]
+packaging
+
+[graphs]
+matplotlib
+numpy
+
+[pretty_now]
+tzlocal
