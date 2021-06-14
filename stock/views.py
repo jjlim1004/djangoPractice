@@ -10,20 +10,20 @@ import pandas as pd
 from rest_framework.views import APIView
 import matplotlib.pyplot as plt
 matplotlib.use('Agg')
-import sys
-import numpy as np
-from ta import add_all_ta_features
-import fastai.tabular
+# import sys
+# import numpy as np
+# from ta import add_all_ta_features
+# import fastai.tabular
 # from fastai import *
 # from fastai.tabular import *
 # from fastai.tabular.all import *
-from sklearn.metrics import mean_squared_error  # Install error metrics
-from sklearn.linear_model import LinearRegression  # Install linear regression model
-from sklearn.neural_network import MLPRegressor  # Install ANN model
-from sklearn.preprocessing import StandardScaler  # to scale for ann
-import yfinance as yf  # Import library to access Yahoo finance stock data
-import plotly.graph_objs as go  # Import the graph ojbects
-import cufflinks as cf
+# from sklearn.metrics import mean_squared_error  # Install error metrics
+# from sklearn.linear_model import LinearRegression  # Install linear regression model
+# from sklearn.neural_network import MLPRegressor  # Install ANN model
+# from sklearn.preprocessing import StandardScaler  # to scale for ann
+# import yfinance as yf  # Import library to access Yahoo finance stock data
+# import plotly.graph_objs as go  # Import the graph ojbects
+# import cufflinks as cf
 
 
 # from plotly.subplots import make_subplots
@@ -33,7 +33,7 @@ import cufflinks as cf
 def stock(request):
     return render(request, 'stock/kospi.html')
 
-
+"""
 class stock_predict(APIView):
     def get(self, request, **kwargs):
         print("stock_predict")
@@ -189,7 +189,7 @@ class stock_predict(APIView):
             lr_pred = LinearRegression_fnc(x_train, y_train, x_test, y_test)
             test2, profit_dollars = CalcProfit(test, lr_pred, j)
             PlotModelResults_Plotly(train, test, lr_pred, tickerSymbol, w, h, j, 'Linear Regression')
-
+"""
 
 class stock_detail(APIView):
     def get(self, request, **kwargs):
@@ -212,14 +212,13 @@ class stock_detail(APIView):
         # 야후에서 삼성전자 데이터 가져오기
         stock = pdr.get_data_yahoo(stock_code, start, end)
         # plot = stock.iplot(asFigure=True, title=stock_name, xTitle='날짜', yTitle='거래량')
-        plot = stock.iplot(asFigure=True, title=stock_name, xTitle='날짜', yTitle='거래량')
+        plot = stock.iplot(asFigure=True, title=stock_name, xTitle='date', yTitle='volume')
         plot.to_json()
         stock_dict = {'stockGraph': plot.to_json()}
         return JsonResponse(stock_dict, json_dumps_params={'ensure_ascii': False})
 
 
 class stock_information(APIView):
-
     def get(self, request, **kwargs):
         # 크롤링을 해서 가져오는 경우
         stock_dict = {}
