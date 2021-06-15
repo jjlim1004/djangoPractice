@@ -188,7 +188,7 @@ LOGGING = {
         },
     },
     'loggers': {
-        'polls': {
+        'mylogger': {
             'handlers': ['file'],
             'level': 'DEBUG',
         },

@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
@@ -18,6 +19,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from rest_framework.views import APIView
 
+logger = logging.getLogger('mylogger')
 
 def stock(request):
     return render(request, 'stock/kospi.html')
@@ -28,21 +30,28 @@ class stock_detail(APIView):
         # #start를 위해 가져올 날짜 설정
         date = request.GET.get('date')
         print(date)
+        logger.log('date is !!!!!!!!!!!!!!!!!!' + date)
         stock_code = request.GET.get('stock_code') + '.KS'
         print(stock_code)
+        logger.log('stock_code is !!!!!!!!!!!!!!' + stock_code)
         stock_name = request.GET.get('stock_name')
         print(stock_name)
+        logger.log('stock_name is !!!!!!!!' + stock_name)
 
         cur_year = datetime.datetime.now().year
         cur_month = datetime.datetime.now().month
         cur_day = datetime.datetime.now().day
 
         start = datetime.datetime(int(date[:4]), int(date[5:7]), int(date[8:]))
+        logger.log('start is !!!!!!!!!!!!!! ' + start)
         end = datetime.datetime(cur_year, cur_month, cur_day)
+        logger.log('end is!!!!!!!!!!!!!!!' +end)
         # 야후에서 삼성전자 데이터 가져오기
         stock = pdr.get_data_yahoo(stock_code, start, end)
+        logger.exception()
         # plot = stock.iplot(asFigure=True, title=stock_name, xTitle='날짜', yTitle='거래량')
         plot = stock.iplot(asFigure=True, title=stock_name, xTitle='date', yTitle='volume')
+        logger.exception()
         print(plot)
         plot.to_json()
         print('plot json 는 ' + plot.to_json())
