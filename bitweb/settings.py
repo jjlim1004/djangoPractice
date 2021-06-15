@@ -112,8 +112,12 @@ DATABASES = {
     #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db', 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': 'django-rds.cyxp7lkxqojp.ap-northeast-2.rds.amazonaws.com',
+        'PORT': '5432',
+        'NAME': 'django-rds',
+        'USER': 'postgres',
+        'PASSWORD': '123654as',
     }
 }
 
