@@ -19,7 +19,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&1a6u6k#s9ypu#&+7!gz!u1p=txpe!my%#bts891x6!d$-gt0!'
+# SECRET_KEY = 'django-insecure-&1a6u6k#s9ypu#&+7!gz!u1p=txpe!my%#bts891x6!d$-gt0!'
+with open(os.path.join(BASE_DIR, 'sk', 'secret_key.txt')) as f:
+    SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
@@ -28,18 +30,18 @@ SECRET_KEY = 'django-insecure-&1a6u6k#s9ypu#&+7!gz!u1p=txpe!my%#bts891x6!d$-gt0!
 DEBUG = False
 
 ALLOWED_HOSTS = [
-                 'localhost',
-                 'localhost:8000',
-                 'localhost:8080',
-                 '222.106.22.85',
-                 '192.168.0.31',
-                 '127.0.0.1',
-                 'ec2-15-165-141-67.ap-northeast-2.compute.amazonaws.com',
-                 'ec2-3-36-56-207.ap-northeast-2.compute.amazonaws.com',
-                 '15.165.141.67',
-                 '192.168.1.59', #준호씨거
-                 '222.106.22.74:8000',
-                 ]
+    'localhost',
+    'localhost:8000',
+    'localhost:8080',
+    '222.106.22.85',
+    '192.168.0.31',
+    '127.0.0.1',
+    'ec2-15-165-141-67.ap-northeast-2.compute.amazonaws.com',
+    'ec2-3-36-56-207.ap-northeast-2.compute.amazonaws.com',
+    '15.165.141.67',
+    '192.168.1.59',  # 준호씨거
+    '222.106.22.74:8000',
+]
 
 # Application definition
 
@@ -167,3 +169,28 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt': "%d/%b/%Y %H:%M:%S"
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'bitweb.log'),
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'polls': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+        },
+    }
+}
