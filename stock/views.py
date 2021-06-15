@@ -1,4 +1,5 @@
 import json
+
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 import pandas_datareader as pdr
@@ -7,9 +8,15 @@ import matplotlib
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
-from rest_framework.views import APIView
-import matplotlib.pyplot as plt
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+import plotly.express as px
+import cufflinks as cf
+from rest_framework.response import Response
+
 matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+from rest_framework.views import APIView
 
 
 def stock(request):
