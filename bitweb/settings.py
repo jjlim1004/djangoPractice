@@ -41,6 +41,9 @@ ALLOWED_HOSTS = [
     '15.165.141.67',
     '192.168.1.59',  # 준호씨거
     '222.106.22.74:8000',
+    #성경씨거
+    '13.124.213.41',
+    'ec2-13-124-213-41.ap-northeast-2.compute.amazonaws.com',
 ]
 
 # Application definition
@@ -78,6 +81,8 @@ CORS_ORIGIN_WHITELIST = [
     'http://192.168.0.31:8080',
     'http://15.165.141.67:8080',
     'http://192.168.1.59:8080',
+    'http://13.124.213.41:8080',
+
 ]
 # cors credential 허용
 # CORS_ORIGIN_ALLOW_ALL = True
