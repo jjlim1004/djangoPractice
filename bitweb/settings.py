@@ -83,6 +83,7 @@ CORS_ORIGIN_WHITELIST = [
     'http://15.165.141.67:8080',
     'http://192.168.1.59:8080',
     'http://13.124.213.41:8080',
+    'ec2-13-124-213-41.ap-northeast-2.compute.amazonaws.com:8080',
 
 ]
 # cors credential 허용
