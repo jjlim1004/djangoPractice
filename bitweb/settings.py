@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'news.apps.NewsConfig',
     'rest_framework',
     'corsheaders',  # django-cors-headers
+    'storages', #s3 연동을 위해
 ]
 
 MIDDLEWARE = [
